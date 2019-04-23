@@ -2,11 +2,14 @@ const express = require("express");
 
 const db = require("../data/db");
 
+// use express router
 const router = express.Router();
 
+// post endpoint
 router.post("/", async (req, res) => {
   try {
     const { title, contents } = req.body;
+    // if post doesn't include title or contents send error
     if (!title || !contents) {
       res.status(400).json("Please provide title and contents for the post.");
     }
@@ -19,6 +22,7 @@ router.post("/", async (req, res) => {
   }
 });
 
+// get all posts endpoints
 router.get("/", async (req, res) => {
   try {
     const getPosts = await db.find();
@@ -28,11 +32,13 @@ router.get("/", async (req, res) => {
   }
 });
 
+//get certain post by id
 router.get("/:id", async (req, res) => {
   try {
     const id = req.params.id;
     const certainPost = await db.findById(id);
 
+    //if id doesn't exist send error
     if (certainPost.length === 0) {
       res.status(404).json("The post with the specified ID does not exist.");
     } else {
@@ -43,10 +49,13 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+// delete endpoint
 router.delete("/:id", async (req, res) => {
   try {
     const id = req.params.id;
     const deletePost = await db.remove(id);
+
+    //if it doesnt contain the right id send error
     if (deletePost <= 0) {
       res
         .status(404)
@@ -61,6 +70,7 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
+//update endpoint
 router.put("/:id", async (req, res) => {
   try {
     const id = req.params.id;
